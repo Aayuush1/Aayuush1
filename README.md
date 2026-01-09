@@ -1,4 +1,4 @@
-## Aayush Prasad Ojha
+## Aayuush
 
 🎓 Indian Institute of Technology Jodhpur  
 📘 BS Artificial Intelligence & Data Science  
