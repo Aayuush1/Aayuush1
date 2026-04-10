@@ -136,6 +136,7 @@ Quantum-AI Intersection    ██████████░░░░░░░�
 | 🏅 | Award | Details |
 |----|-------|---------|
 | 🥇 | **India Genius Award** | Level 1 — National Recognition |
+| 🚀 | **OSCG'26** | Open Source Contribution |
 | 🤖 | **Gen-AI Mastermind** | Certified AI Systems Thinker |
 | 🇮🇳 | **India AI Impact Buildathon** | Participant & Builder |
 | 🎓 | **YIIC Internship** | Ex-Intern, Scaler School of Technology |
