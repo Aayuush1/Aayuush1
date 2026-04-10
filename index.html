@@ -1,0 +1,2322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AAYUUSH — Quantum Systems Architect</title>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Syncopate:wght@400;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg: #050505;
+            --text: #ffffff;
+            --accent: #ff3e00;
+            --secondary: #6366f1;
+            --gray: #666666;
+            --dark-gray: #0a0a0a;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+
+        html.lenis, html.lenis body {
+            height: auto;
+        }
+
+        .lenis.lenis-smooth {
+            scroll-behavior: auto !important;
+        }
+
+        /* Film Grain */
+        .grain {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0.025;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+
+        /* Custom Cursor */
+        .cursor {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            border: 1px solid var(--text);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 10000;
+            mix-blend-mode: difference;
+            transition: transform 0.15s ease-out, width 0.3s, height 0.3s;
+            transform: translate(-50%, -50%);
+        }
+
+        .cursor.hover {
+            width: 80px;
+            height: 80px;
+            background: var(--text);
+        }
+
+        .cursor-follower {
+            position: fixed;
+            width: 8px;
+            height: 8px;
+            background: var(--text);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 10000;
+            mix-blend-mode: difference;
+            transform: translate(-50%, -50%);
+        }
+
+        /* Quantum Canvas */
+        #quantum-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 2rem 4rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+            mix-blend-mode: difference;
+        }
+
+        .logo {
+            font-family: 'Syncopate', sans-serif;
+            font-weight: 700;
+            font-size: 1.2rem;
+            letter-spacing: -0.02em;
+            cursor: pointer;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 3rem;
+        }
+
+        .nav-links a {
+            color: var(--text);
+            text-decoration: none;
+            font-size: 0.8rem;
+            font-weight: 500;
+            position: relative;
+            overflow: hidden;
+            font-family: 'Space Mono', monospace;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: var(--text);
+            transform: translateX(-101%);
+            transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .nav-links a:hover::after {
+            transform: translateX(0);
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 0 4rem;
+            position: relative;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 1400px;
+        }
+
+        .hero-label {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            color: var(--gray);
+            margin-bottom: 2rem;
+            display: block;
+            overflow: hidden;
+        }
+
+        .hero-label span {
+            display: inline-block;
+            transform: translateY(100%);
+        }
+
+        .hero-title {
+            font-family: 'Syncopate', sans-serif;
+            font-size: clamp(3rem, 9vw, 7rem);
+            font-weight: 700;
+            line-height: 0.95;
+            letter-spacing: -0.04em;
+            margin-bottom: 3rem;
+            overflow: hidden;
+        }
+
+        .hero-title .line {
+            display: block;
+            overflow: hidden;
+        }
+
+        .hero-title .line span {
+            display: block;
+            transform: translateY(100%) rotate(5deg);
+            transform-origin: left bottom;
+        }
+
+        .hero-subtitle {
+            font-size: 1rem;
+            max-width: 600px;
+            line-height: 1.7;
+            color: var(--gray);
+            overflow: hidden;
+            font-weight: 300;
+        }
+
+        .hero-subtitle span {
+            display: block;
+            transform: translateY(100%);
+        }
+
+        /* Quote Section - Attention Grabber */
+        .quote-section {
+            min-height: 60vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4rem;
+            position: relative;
+            background: linear-gradient(to bottom, transparent, rgba(255,62,0,0.03), transparent);
+        }
+
+        .quote-container {
+            max-width: 1000px;
+            text-align: center;
+            position: relative;
+        }
+
+        .quote-mark {
+            font-family: 'Syncopate', sans-serif;
+            font-size: 15rem;
+            position: absolute;
+            top: -5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            color: var(--accent);
+            opacity: 0.1;
+            line-height: 1;
+            pointer-events: none;
+        }
+
+        .quote-text {
+            font-family: 'Inter', sans-serif;
+            font-size: clamp(1.5rem, 3vw, 2.5rem);
+            line-height: 1.4;
+            font-weight: 300;
+            position: relative;
+            z-index: 2;
+            font-style: italic;
+        }
+
+        .quote-author {
+            margin-top: 2rem;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.9rem;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+        }
+
+        .quote-context {
+            margin-top: 0.5rem;
+            font-size: 0.85rem;
+            color: var(--gray);
+        }
+
+        /* Scroll Indicator */
+        .scroll-ind {
+            position: absolute;
+            bottom: 4rem;
+            left: 4rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--gray);
+        }
+
+        .scroll-line {
+            width: 60px;
+            height: 1px;
+            background: var(--gray);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .scroll-line::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--text);
+            transform: translateX(-100%);
+            animation: scrollLine 2s infinite;
+        }
+
+        @keyframes scrollLine {
+            0% { transform: translateX(-100%); }
+            50% { transform: translateX(0); }
+            100% { transform: translateX(100%); }
+        }
+
+        /* Education Section - IIT Jodhpur */
+        .education-section {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 8rem 4rem;
+            position: relative;
+        }
+
+        .education-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .education-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 4rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .education-label {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            color: var(--accent);
+        }
+
+        .education-title {
+            font-family: 'Syncopate', sans-serif;
+            font-size: clamp(2rem, 4vw, 3.5rem);
+            line-height: 1.1;
+        }
+
+        .education-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+        }
+
+        .education-card {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 3rem;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .education-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--accent);
+            transform: scaleY(0);
+            transform-origin: top;
+            transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .education-card:hover::before {
+            transform: scaleY(1);
+        }
+
+        .education-card:hover {
+            background: rgba(255,255,255,0.04);
+            transform: translateX(10px);
+        }
+
+        .edu-period {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--accent);
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .edu-degree {
+            font-family: 'Syncopate', sans-serif;
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+
+        .edu-school {
+            font-size: 1.1rem;
+            color: var(--gray);
+            margin-bottom: 1.5rem;
+        }
+
+        .edu-details {
+            font-size: 0.9rem;
+            line-height: 1.6;
+            color: #888;
+        }
+
+        .edu-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .edu-tag {
+            padding: 0.4rem 0.8rem;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            font-family: 'Space Mono', monospace;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* About Section */
+        .about-section {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 8rem 4rem;
+            position: relative;
+        }
+
+        .about-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1.5fr;
+            gap: 6rem;
+            align-items: start;
+        }
+
+        .about-label {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            color: var(--accent);
+            margin-bottom: 2rem;
+        }
+
+        .about-title {
+            font-family: 'Syncopate', sans-serif;
+            font-size: clamp(2rem, 4vw, 3.5rem);
+            line-height: 1.1;
+            margin-bottom: 3rem;
+        }
+
+        .about-text {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #999;
+            font-weight: 300;
+        }
+
+        .about-text p {
+            margin-bottom: 1.5rem;
+        }
+
+        .about-text .highlight {
+            color: var(--text);
+            font-weight: 400;
+        }
+
+        .about-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 3rem;
+            margin-top: 4rem;
+        }
+
+        .stat-item {
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 1.5rem;
+        }
+
+        .stat-number {
+            font-family: 'Syncopate', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--accent);
+        }
+
+        .stat-label {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--gray);
+        }
+
+        /* Project Dashboard */
+        .project-dashboard {
+            min-height: 100vh;
+            padding: 8rem 4rem;
+            position: relative;
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 4rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .dashboard-title {
+            font-family: 'Syncopate', sans-serif;
+            font-size: clamp(2rem, 4vw, 3rem);
+        }
+
+        .dashboard-filters {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .filter-btn {
+            padding: 0.6rem 1.2rem;
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.2);
+            color: var(--text);
+            font-family: 'Space Mono', monospace;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .filter-btn:hover, .filter-btn.active {
+            background: var(--accent);
+            border-color: var(--accent);
+        }
+
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            gap: 2rem;
+        }
+
+        .project-item {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            cursor: pointer;
+        }
+
+        .project-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255,62,0,0.1), transparent 50%);
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+
+        .project-item:hover::before {
+            opacity: 1;
+        }
+
+        .project-item:hover {
+            transform: translateY(-5px);
+            border-color: rgba(255,255,255,0.2);
+        }
+
+        .project-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1.5rem;
+        }
+
+        .project-name {
+            font-family: 'Syncopate', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+
+        .project-status {
+            padding: 0.3rem 0.8rem;
+            background: rgba(255,62,0,0.2);
+            color: var(--accent);
+            font-family: 'Space Mono', monospace;
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .project-desc {
+            font-size: 0.9rem;
+            line-height: 1.6;
+            color: #888;
+            margin-bottom: 1.5rem;
+        }
+
+        .project-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--gray);
+        }
+
+        .project-lang {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .lang-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--accent);
+        }
+
+        .project-stats {
+            display: flex;
+            gap: 1rem;
+        }
+
+        /* Horizontal Scroll */
+        .horizontal-section {
+            height: 300vh;
+            position: relative;
+        }
+
+        .horizontal-container {
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+        }
+
+        .horizontal-track {
+            display: flex;
+            gap: 4rem;
+            padding: 0 4rem;
+            will-change: transform;
+        }
+
+        .project-card {
+            width: 65vw;
+            height: 70vh;
+            flex-shrink: 0;
+            position: relative;
+            overflow: hidden;
+            background: #0a0a0a;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .project-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.6;
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            filter: grayscale(100%) contrast(1.2);
+        }
+
+        .project-card:hover img {
+            opacity: 0.9;
+            transform: scale(1.05);
+            filter: grayscale(0%) contrast(1);
+        }
+
+        .project-info {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 4rem;
+            background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.6) 50%, transparent 100%);
+            transform: translateY(20px);
+            opacity: 0;
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .project-card:hover .project-info {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .project-meta {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            margin-bottom: 1rem;
+        }
+
+        .project-title {
+            font-family: 'Syncopate', sans-serif;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .project-description {
+            color: #888;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            max-width: 500px;
+        }
+
+        /* Marquee */
+        .marquee-section {
+            padding: 3rem 0;
+            overflow: hidden;
+            border-top: 1px solid rgba(255,255,255,0.08);
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .marquee-track {
+            display: flex;
+            width: fit-content;
+            animation: marquee 25s linear infinite;
+        }
+
+        .marquee-content {
+            display: flex;
+            gap: 4rem;
+            padding: 0 2rem;
+            font-family: 'Syncopate', sans-serif;
+            font-size: 3.5rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            white-space: nowrap;
+            color: transparent;
+            -webkit-text-stroke: 1px rgba(255,255,255,0.25);
+        }
+
+        @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        /* Skills Section */
+        .skills-section {
+            padding: 8rem 4rem;
+            position: relative;
+        }
+
+        .skills-header {
+            margin-bottom: 4rem;
+        }
+
+        .skills-label {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            color: var(--gray);
+            margin-bottom: 1rem;
+        }
+
+        .skills-title {
+            font-family: 'Syncopate', sans-serif;
+            font-size: clamp(2rem, 4vw, 3rem);
+        }
+
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1px;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .skill-item {
+            background: var(--bg);
+            padding: 3rem;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            transition: background 0.4s;
+        }
+
+        .skill-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255,62,0,0.12), transparent 60%);
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+
+        .skill-item:hover::before {
+            opacity: 1;
+        }
+
+        .skill-item:hover {
+            background: #080808;
+        }
+
+        .skill-number {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--gray);
+            margin-bottom: 1.5rem;
+        }
+
+        .skill-name {
+            font-family: 'Syncopate', sans-serif;
+            font-size: 1.1rem;
+            margin-bottom: 0.75rem;
+            font-weight: 700;
+        }
+
+        .skill-desc {
+            font-size: 0.85rem;
+            color: var(--gray);
+            line-height: 1.6;
+            font-weight: 300;
+        }
+
+        /* Contact Section */
+        .contact-section {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 4rem;
+            position: relative;
+        }
+
+        .contact-header {
+            margin-bottom: 6rem;
+        }
+
+        .contact-label {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            color: var(--gray);
+            margin-bottom: 2rem;
+        }
+
+        .contact-title {
+            font-family: 'Syncopate', sans-serif;
+            font-size: clamp(2.5rem, 6vw, 5rem);
+            line-height: 1;
+            max-width: 900px;
+        }
+
+        .contact-links {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .contact-link {
+            font-size: 1.5rem;
+            color: var(--text);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 2rem 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            overflow: hidden;
+            font-family: 'Space Mono', monospace;
+        }
+
+        .contact-link::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--text);
+            transform: translateX(-100%);
+            transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: -1;
+        }
+
+        .contact-link:hover {
+            color: var(--bg);
+            padding-left: 2rem;
+            padding-right: 2rem;
+        }
+
+        .contact-link:hover::before {
+            transform: translateX(0);
+        }
+
+        .contact-link span:first-child {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--gray);
+            transition: color 0.3s;
+        }
+
+        .contact-link:hover span:first-child {
+            color: var(--bg);
+        }
+
+        /* CTA Section - Connection Magnet */
+        .cta-section {
+            padding: 6rem 4rem;
+            background: var(--accent);
+            color: var(--bg);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 10px,
+                rgba(0,0,0,0.03) 10px,
+                rgba(0,0,0,0.03) 20px
+            );
+            animation: slide 20s linear infinite;
+        }
+
+        @keyframes slide {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        .cta-content {
+            position: relative;
+            z-index: 2;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .cta-label {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            margin-bottom: 1.5rem;
+            opacity: 0.7;
+        }
+
+        .cta-title {
+            font-family: 'Syncopate', sans-serif;
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            margin-bottom: 1.5rem;
+            line-height: 1.1;
+        }
+
+        .cta-text {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 2.5rem;
+            opacity: 0.9;
+        }
+
+        .cta-btn {
+            display: inline-block;
+            padding: 1.2rem 3rem;
+            background: var(--bg);
+            color: var(--text);
+            text-decoration: none;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            font-weight: 700;
+            transition: transform 0.3s;
+        }
+
+        .cta-btn:hover {
+            transform: scale(1.05);
+        }
+
+        /* Admin Panel */
+        .admin-trigger {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 10px;
+            height: 10px;
+            background: var(--accent);
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 9998;
+            opacity: 0.2;
+            transition: opacity 0.3s;
+        }
+
+        .admin-trigger:hover {
+            opacity: 1;
+        }
+
+        .admin-panel {
+            position: fixed;
+            top: 0;
+            right: -600px;
+            width: 600px;
+            height: 100vh;
+            background: #080808;
+            border-left: 1px solid rgba(255,255,255,0.1);
+            z-index: 9997;
+            padding: 4rem;
+            overflow-y: auto;
+            transition: right 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .admin-panel.active {
+            right: 0;
+        }
+
+        .admin-close {
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: 1px solid rgba(255,255,255,0.2);
+            transition: all 0.3s;
+            font-size: 1.5rem;
+        }
+
+        .admin-close:hover {
+            background: var(--text);
+            color: var(--bg);
+        }
+
+        .admin-title {
+            font-family: 'Syncopate', sans-serif;
+            font-size: 1.25rem;
+            margin-bottom: 3rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .admin-section {
+            margin-bottom: 3rem;
+        }
+
+        .admin-section h4 {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--gray);
+            margin-bottom: 1.5rem;
+        }
+
+        .admin-control {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.2rem 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .admin-control label {
+            font-size: 0.9rem;
+            font-weight: 300;
+        }
+
+        .toggle {
+            width: 48px;
+            height: 24px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 12px;
+            position: relative;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .toggle.active {
+            background: var(--accent);
+        }
+
+        .toggle::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 20px;
+            height: 20px;
+            background: var(--text);
+            border-radius: 50%;
+            transition: transform 0.3s;
+        }
+
+        .toggle.active::after {
+            transform: translateX(24px);
+        }
+
+        .color-picker {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .color-option {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: transform 0.3s;
+        }
+
+        .color-option:hover {
+            transform: scale(1.1);
+        }
+
+        .color-option.active {
+            border-color: var(--text);
+        }
+
+        .theme-presets {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        .theme-preset {
+            padding: 1rem;
+            border: 1px solid rgba(255,255,255,0.1);
+            cursor: pointer;
+            text-align: center;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            transition: all 0.3s;
+        }
+
+        .theme-preset:hover {
+            border-color: var(--accent);
+        }
+
+        .theme-preset.active {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: var(--bg);
+        }
+
+        input[type="password"], input[type="text"] {
+            width: 100%;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: white;
+            padding: 1rem;
+            font-family: 'Space Mono', monospace;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+
+        input[type="password"]:focus, input[type="text"]:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        button {
+            cursor: pointer;
+            font-family: 'Space Mono', monospace;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .btn-primary {
+            width: 100%;
+            background: var(--text);
+            color: var(--bg);
+            border: none;
+            padding: 1rem;
+            font-weight: 700;
+            transition: all 0.3s;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent);
+            color: var(--text);
+        }
+
+        .btn-secondary {
+            width: 100%;
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.2);
+            color: white;
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+            transition: all 0.3s;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255,255,255,0.05);
+            border-color: rgba(255,255,255,0.4);
+        }
+
+        .password-section {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        /* Velocity Skew */
+        .velocity-skew {
+            will-change: transform;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .about-container, .education-grid {
+                grid-template-columns: 1fr;
+                gap: 4rem;
+            }
+            
+            .skills-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .projects-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            nav {
+                padding: 1.5rem;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+            
+            .hero, .about-section, .education-section, .project-dashboard, .skills-section, .contact-section, .quote-section {
+                padding-left: 1.5rem;
+                padding-right: 1.5rem;
+            }
+            
+            .skills-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .project-card {
+                width: 85vw;
+            }
+            
+            .admin-panel {
+                width: 100%;
+                right: -100%;
+            }
+            
+            .quote-mark {
+                font-size: 8rem;
+                top: -2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="grain"></div>
+    <div class="cursor"></div>
+    <div class="cursor-follower"></div>
+    <canvas id="quantum-canvas"></canvas>
+
+    <nav>
+        <div class="logo" data-cursor="hover">AAYUUSH</div>
+        <div class="nav-links">
+            <a href="#education" data-cursor="hover">Education</a>
+            <a href="#work" data-cursor="hover">Work</a>
+            <a href="#projects" data-cursor="hover">Projects</a>
+            <a href="#about" data-cursor="hover">About</a>
+            <a href="#contact" data-cursor="hover">Contact</a>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-content">
+            <span class="hero-label">
+                <span>Founder & Chief Architect — IIT Jodhpur '29</span>
+            </span>
+            <h1 class="hero-title">
+                <div class="line"><span>Quantum</span></div>
+                <div class="line"><span>Decision</span></div>
+                <div class="line"><span>Systems</span></div>
+            </h1>
+            <p class="hero-subtitle">
+                <span>Building AYNX Optivara and SkillPraxis. Specialized in constraint optimization, Small Language Models, and the intersection of quantum computing with enterprise decision intelligence.</span>
+            </p>
+        </div>
+        
+        <div class="scroll-ind">
+            <span>Scroll</span>
+            <div class="scroll-line"></div>
+        </div>
+    </section>
+
+    <!-- Quote Section - Attention Grabber -->
+    <section class="quote-section">
+        <div class="quote-container">
+            <div class="quote-mark">"</div>
+            <p class="quote-text velocity-skew">
+                Nature isn't classical, dammit, and if you want to make a simulation of nature, you'd better make it quantum mechanical.
+            </p>
+            <div class="quote-author">Richard Feynman</div>
+            <div class="quote-context">Simulating Physics with Computers, 1981</div>
+        </div>
+    </section>
+
+    <!-- Education Section - IIT Jodhpur -->
+    <section class="education-section" id="education">
+        <div class="education-container">
+            <div class="education-header">
+                <div>
+                    <div class="education-label">Academic Background</div>
+                    <h2 class="education-title velocity-skew">Education</h2>
+                </div>
+            </div>
+            
+            <div class="education-grid">
+                <div class="education-card" data-cursor="hover">
+                    <div class="edu-period">Sept 2025 — Present</div>
+                    <div class="edu-degree">B.S. Artificial Intelligence & Data Science</div>
+                    <div class="edu-school">Indian Institute of Technology Jodhpur</div>
+                    <div class="edu-details">
+                        Pursuing Bachelor of Science with focus on computational thinking, 
+                        mathematics, and data-driven problem solving. Building foundation in 
+                        machine learning, optimization algorithms, and quantum computing.
+                    </div>
+                    <div class="edu-tags">
+                        <span class="edu-tag">Machine Learning</span>
+                        <span class="edu-tag">Optimization</span>
+                        <span class="edu-tag">Quantum Computing</span>
+                        <span class="edu-tag">Computational Theory</span>
+                    </div>
+                </div>
+
+                <div class="education-card" data-cursor="hover">
+                    <div class="edu-period">Jun 2025 — Jul 2025</div>
+                    <div class="edu-degree">Ex-Intern</div>
+                    <div class="edu-school">Scaler School of Technology</div>
+                    <div class="edu-details">
+                        Industry-oriented problem solving and structured technical learning. 
+                        Strengthened logical thinking, collaboration, and disciplined learning habits. 
+                        Gained early insight into how technical skills translate to real-world applications.
+                    </div>
+                    <div class="edu-tags">
+                        <span class="edu-tag">Problem Solving</span>
+                        <span class="edu-tag">System Design</span>
+                        <span class="edu-tag">Industry Practices</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Project Dashboard -->
+    <section class="project-dashboard" id="projects">
+        <div class="dashboard-header">
+            <div>
+                <div class="skills-label">Repository</div>
+                <h2 class="dashboard-title velocity-skew">Project Dashboard</h2>
+            </div>
+            <div class="dashboard-filters">
+                <button class="filter-btn active" onclick="filterProjects('all', this)">All</button>
+                <button class="filter-btn" onclick="filterProjects('ai', this)">AI/ML</button>
+                <button class="filter-btn" onclick="filterProjects('quantum', this)">Quantum</button>
+                <button class="filter-btn" onclick="filterProjects('opt', this)">Optimization</button>
+            </div>
+        </div>
+
+        <div class="projects-grid" id="projectsGrid">
+            <!-- Projects will be populated by JavaScript -->
+        </div>
+    </section>
+
+    <!-- Horizontal Scroll Ventures -->
+    <section class="horizontal-section" id="work">
+        <div class="horizontal-container">
+            <div class="horizontal-track">
+                <div class="project-card" data-cursor="hover">
+                    <img src="https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=1400&q=80" alt="AYNX">
+                    <div class="project-info">
+                        <div class="project-meta">Enterprise Optimization Platform</div>
+                        <h3 class="project-title">AYNX OPTIVARA</h3>
+                        <p class="project-description">
+                            Decision intelligence system integrating predictive analytics with constraint-based 
+                            optimization for high-stakes operational decisions.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="project-card" data-cursor="hover">
+                    <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=1400&q=80" alt="SkillPraxis">
+                    <div class="project-info">
+                        <div class="project-meta">EdTech Initiative</div>
+                        <h3 class="project-title">SKILLPRAXIS</h3>
+                        <p class="project-description">
+                            Reimagining technical education through intensive, hands-on capstone projects 
+                            bridging academia and industry.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="project-card" data-cursor="hover">
+                    <img src="https://images.unsplash.com/photo-1639322537228-f710d846310a?w=1400&q=80" alt="Quantum ML">
+                    <div class="project-info">
+                        <div class="project-meta">Research & Development</div>
+                        <h3 class="project-title">QUANTUM-ML HYBRID</h3>
+                        <p class="project-description">
+                            Exploring variational quantum algorithms for combinatorial optimization 
+                            using Qiskit and custom frameworks.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="project-card" data-cursor="hover">
+                    <img src="https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=1400&q=80" alt="Open Source">
+                    <div class="project-info">
+                        <div class="project-meta">Open Source</div>
+                        <h3 class="project-title">OSCG'26</h3>
+                        <p class="project-description">
+                            Contributor to Open Source Connect Global 2026. Building tools for the 
+                            next generation of developers.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="marquee-section">
+        <div class="marquee-track">
+            <div class="marquee-content">
+                Optimization • Machine Learning • Quantum Computing • Decision Intelligence • Enterprise AI •
+            </div>
+            <div class="marquee-content">
+                Optimization • Machine Learning • Quantum Computing • Decision Intelligence • Enterprise AI •
+            </div>
+        </div>
+    </section>
+
+    <section class="about-section" id="about">
+        <div class="about-container">
+            <div class="about-left">
+                <div class="about-label">01 — About</div>
+                <h2 class="about-title velocity-skew">First Principles<br>Thinker</h2>
+                <div class="about-stats">
+                    <div class="stat-item">
+                        <div class="stat-number">2</div>
+                        <div class="stat-label">Ventures Founded</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">5+</div>
+                        <div class="stat-label">Certifications</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">IIT</div>
+                        <div class="stat-label">Jodhpur '29</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">∞</div>
+                        <div class="stat-label">Curiosity</div>
+                    </div>
+                </div>
+            </div>
+            <div class="about-right">
+                <div class="about-text velocity-skew">
+                    <p>
+                        I am an <span class="highlight">AI & Data Science undergraduate at IIT Jodhpur</span> and 
+                        <span class="highlight">Founder of AYNX and SkillPraxis</span>. My work focuses on building 
+                        decision intelligence systems that operate at the intersection of machine learning, 
+                        optimization theory, and quantum computing.
+                    </p>
+                    <p>
+                        At <span class="highlight">AYNX</span>, I am developing Optivara, a constraint-based 
+                        optimization platform for enterprise environments. At <span class="highlight">SkillPraxis</span>, 
+                        I am reimagining technical education through hands-on capstone projects addressing 
+                        real-world Indian industry challenges.
+                    </p>
+                    <p>
+                        My approach is rooted in <span class="highlight">first-principles thinking</span>—understanding 
+                        how mathematics, algorithms, and computation interact to solve complex problems. I value 
+                        depth, rigor, and clarity over shortcuts and surface-level learning.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="skills-section" id="skills">
+        <div class="skills-header">
+            <div class="skills-label">02 — Expertise</div>
+            <h2 class="skills-title velocity-skew">Technical Arsenal</h2>
+        </div>
+        
+        <div class="skills-grid">
+            <div class="skill-item" data-cursor="hover">
+                <div class="skill-number">01</div>
+                <div class="skill-name">Small Language Models</div>
+                <div class="skill-desc">Fine-tuning, quantization, and edge deployment of efficient transformer architectures.</div>
+            </div>
+            <div class="skill-item" data-cursor="hover">
+                <div class="skill-number">02</div>
+                <div class="skill-name">Recommender Systems</div>
+                <div class="skill-desc">Collaborative filtering and deep learning approaches to large-scale recommendation engines.</div>
+            </div>
+            <div class="skill-item" data-cursor="hover">
+                <div class="skill-number">03</div>
+                <div class="skill-name">Constraint Optimization</div>
+                <div class="skill-desc">Linear programming, integer programming, and heuristic methods for NP-hard problems.</div>
+            </div>
+            <div class="skill-item" data-cursor="hover">
+                <div class="skill-number">04</div>
+                <div class="skill-name">Quantum Algorithms</div>
+                <div class="skill-desc">QAOA, VQE, and quantum annealing approaches. Qiskit, Cirq, and hybrid architectures.</div>
+            </div>
+            <div class="skill-item" data-cursor="hover">
+                <div class="skill-number">05</div>
+                <div class="skill-name">Data Architecture</div>
+                <div class="skill-desc">Pipeline design, warehousing, real-time analytics, and distributed systems.</div>
+            </div>
+            <div class="skill-item" data-cursor="hover">
+                <div class="skill-number">06</div>
+                <div class="skill-name">Systems Design</div>
+                <div class="skill-desc">First-principles approach to robust, scalable architectures for decision intelligence.</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Connection Magnet CTA -->
+    <section class="cta-section">
+        <div class="cta-content">
+            <div class="cta-label">Open for Collaboration</div>
+            <h2 class="cta-title">Let's Build the Future Together</h2>
+            <p class="cta-text">
+                I'm always interested in discussing quantum computing, optimization challenges, 
+                and the future of decision intelligence. Whether you're a researcher, founder, or 
+                curious mind—let's connect.
+            </p>
+            <a href="#contact" class="cta-btn" onclick="scrollToContact(event)">Start a Conversation</a>
+        </div>
+    </section>
+
+    <section class="contact-section" id="contact">
+        <div class="contact-header">
+            <div class="contact-label">03 — Contact</div>
+            <h2 class="contact-title velocity-skew">Get in Touch</h2>
+        </div>
+        
+        <div class="contact-links">
+            <a href="mailto:Aayuush.bs@gmail.com" class="contact-link" data-cursor="hover">
+                <span>Email</span>
+                <span>Aayuush.bs@gmail.com</span>
+            </a>
+            <a href="https://www.linkedin.com/in/aayuush1/" target="_blank" class="contact-link" data-cursor="hover">
+                <span>LinkedIn</span>
+                <span>linkedin.com/in/aayuush1</span>
+            </a>
+            <a href="https://github.com/aayuush1" target="_blank" class="contact-link" data-cursor="hover">
+                <span>GitHub</span>
+                <span>github.com/aayuush1</span>
+            </a>
+        </div>
+    </section>
+
+    <div class="admin-trigger" onclick="toggleAdmin()"></div>
+    
+    <div class="admin-panel" id="adminPanel">
+        <div class="admin-close" onclick="toggleAdmin()" data-cursor="hover">×</div>
+        <h3 class="admin-title">SYSTEM CONTROL</h3>
+        
+        <div class="admin-section" id="adminLogin">
+            <h4>Authentication Required</h4>
+            <input type="password" id="adminPass" placeholder="Access Key">
+            <button class="btn-primary" onclick="loginAdmin()" data-cursor="hover">Initialize</button>
+        </div>
+
+        <div id="adminControls" style="display: none;">
+            <div class="admin-section">
+                <h4>Visual Systems</h4>
+                <div class="admin-control">
+                    <label>Quantum Field Simulation</label>
+                    <div class="toggle active" onclick="toggleEffect(this, 'quantum')"></div>
+                </div>
+                <div class="admin-control">
+                    <label>Film Grain Overlay</label>
+                    <div class="toggle active" onclick="toggleEffect(this, 'grain')"></div>
+                </div>
+                <div class="admin-control">
+                    <label>Cursor Blend Mode</label>
+                    <div class="toggle active" onclick="toggleEffect(this, 'cursor')"></div>
+                </div>
+                <div class="admin-control">
+                    <label>Velocity Distortion</label>
+                    <div class="toggle active" onclick="toggleEffect(this, 'skew')"></div>
+                </div>
+            </div>
+
+            <div class="admin-section">
+                <h4>Theme Engine</h4>
+                <div class="theme-presets">
+                    <div class="theme-preset active" onclick="setTheme('industrial', this)">Industrial</div>
+                    <div class="theme-preset" onclick="setTheme('quantum', this)">Quantum</div>
+                    <div class="theme-preset" onclick="setTheme('matrix', this)">Matrix</div>
+                    <div class="theme-preset" onclick="setTheme('monochrome', this)">Mono</div>
+                </div>
+            </div>
+
+            <div class="admin-section">
+                <h4>Accent Color</h4>
+                <div class="color-picker">
+                    <div class="color-option active" style="background: #ff3e00;" onclick="setAccent('#ff3e00', this)"></div>
+                    <div class="color-option" style="background: #00d4ff;" onclick="setAccent('#00d4ff', this)"></div>
+                    <div class="color-option" style="background: #10b981;" onclick="setAccent('#10b981', this)"></div>
+                    <div class="color-option" style="background: #f59e0b;" onclick="setAccent('#f59e0b', this)"></div>
+                    <div class="color-option" style="background: #ec4899;" onclick="setAccent('#ec4899', this)"></div>
+                </div>
+            </div>
+
+            <div class="admin-section">
+                <h4>Content Management</h4>
+                <button class="btn-secondary" onclick="addProject()" data-cursor="hover">+ Add Repository</button>
+                <button class="btn-secondary" onclick="editQuote()" data-cursor="hover">Edit Quote</button>
+                <button class="btn-secondary" onclick="editEducation()" data-cursor="hover">Modify Education</button>
+                <button class="btn-secondary" onclick="exportData()" data-cursor="hover">Export Analytics</button>
+            </div>
+
+            <div class="admin-section">
+                <h4>System Metrics</h4>
+                <div style="font-family: 'Space Mono', monospace; font-size: 0.8rem; line-height: 2.2; color: var(--gray);">
+                    <div style="display: flex; justify-content: space-between;">
+                        <span>Session Duration</span>
+                        <span id="sessionTime" style="color: var(--text);">00:00</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between;">
+                        <span>Scroll Depth</span>
+                        <span id="scrollDepth" style="color: var(--text);">0%</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between;">
+                        <span>Active Viewport</span>
+                        <span id="activeSection" style="color: var(--text);">Hero</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between;">
+                        <span>Repositories</span>
+                        <span id="repoCount" style="color: var(--text);">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="password-section">
+                <h4>Security Settings</h4>
+                <input type="password" id="currentPass" placeholder="Current Password">
+                <input type="password" id="newPass" placeholder="New Password">
+                <input type="password" id="confirmPass" placeholder="Confirm New Password">
+                <button class="btn-secondary" onclick="changePassword()" data-cursor="hover">Update Access Key</button>
+            </div>
+
+            <button class="btn-primary" onclick="logoutAdmin()" style="margin-top: 2rem;" data-cursor="hover">Terminate Session</button>
+        </div>
+    </div>
+
+    <script>
+        // Configuration
+        let config = {
+            adminPassword: 'quantum2026',
+            theme: 'industrial',
+            accent: '#ff3e00',
+            quantumActive: true
+        };
+
+        // Project Data - Add your actual repositories here
+        const projects = [
+            {
+                name: "AYNX-Optivara",
+                category: "opt",
+                description: "Enterprise decision optimization platform with constraint-based programming and predictive analytics.",
+                language: "Python",
+                stars: 12,
+                forks: 3,
+                status: "Active"
+            },
+            {
+                name: "quantum-ml-framework",
+                category: "quantum",
+                description: "Hybrid classical-quantum machine learning framework using Qiskit and PyTorch.",
+                language: "Python",
+                stars: 28,
+                forks: 7,
+                status: "Research"
+            },
+            {
+                name: "slm-optimizer",
+                category: "ai",
+                description: "Small Language Model optimization toolkit for edge deployment and quantization.",
+                language: "Python",
+                stars: 45,
+                forks: 12,
+                status: "Active"
+            },
+            {
+                name: "skillpraxis-core",
+                category: "ai",
+                description: "Core learning management system for hands-on technical education platform.",
+                language: "TypeScript",
+                stars: 8,
+                forks: 2,
+                status: "Development"
+            },
+            {
+                name: "constraint-solver",
+                category: "opt",
+                description: "High-performance constraint satisfaction problem solver with OR-Tools integration.",
+                language: "C++",
+                stars: 34,
+                forks: 9,
+                status: "Active"
+            },
+            {
+                name: "qaoa-implementations",
+                category: "quantum",
+                description: "Quantum Approximate Optimization Algorithm implementations for MaxCut and TSP.",
+                language: "Python",
+                stars: 56,
+                forks: 15,
+                status: "Research"
+            }
+        ];
+
+        // Initialize
+        const lenis = new Lenis({
+            duration: 1.2,
+            easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+            direction: 'vertical',
+            gestureDirection: 'vertical',
+            smooth: true,
+            smoothTouch: false,
+        });
+
+        function raf(time) {
+            lenis.raf(time);
+            requestAnimationFrame(raf);
+        }
+        requestAnimationFrame(raf);
+
+        lenis.on('scroll', ScrollTrigger.update);
+        gsap.ticker.add((time) => {
+            lenis.raf(time * 1000);
+        });
+        gsap.ticker.lagSmoothing(0);
+
+        // Cursor
+        const cursor = document.querySelector('.cursor');
+        const follower = document.querySelector('.cursor-follower');
+        let mouseX = 0, mouseY = 0;
+        let cursorX = 0, cursorY = 0;
+        let followerX = 0, followerY = 0;
+
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+        });
+
+        function animateCursor() {
+            cursorX += (mouseX - cursorX) * 0.1;
+            cursorY += (mouseY - cursorY) * 0.1;
+            followerX += (mouseX - followerX) * 0.03;
+            followerY += (mouseY - followerY) * 0.03;
+
+            cursor.style.left = cursorX + 'px';
+            cursor.style.top = cursorY + 'px';
+            follower.style.left = followerX + 'px';
+            follower.style.top = followerY + 'px';
+
+            requestAnimationFrame(animateCursor);
+        }
+        animateCursor();
+
+        document.querySelectorAll('[data-cursor="hover"]').forEach(el => {
+            el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
+            el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
+        });
+
+        // Quantum Field Background
+        const canvas = document.getElementById('quantum-canvas');
+        const ctx = canvas.getContext('2d');
+        
+        let width, height;
+        let particles = [];
+        let mouse = { x: 0, y: 0 };
+        
+        function resize() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        }
+        resize();
+        window.addEventListener('resize', resize);
+
+        class QuantumParticle {
+            constructor() {
+                this.reset();
+            }
+
+            reset() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * height;
+                this.vx = (Math.random() - 0.5) * 0.5;
+                this.vy = (Math.random() - 0.5) * 0.5;
+                this.radius = Math.random() * 2 + 0.5;
+                this.phase = Math.random() * Math.PI * 2;
+                this.amplitude = Math.random() * 20 + 10;
+                this.frequency = Math.random() * 0.02 + 0.01;
+                this.baseX = this.x;
+                this.baseY = this.y;
+            }
+
+            update(time) {
+                this.phase += this.frequency;
+                
+                if (Math.random() < 0.001) {
+                    this.x += (Math.random() - 0.5) * 100;
+                    this.y += (Math.random() - 0.5) * 100;
+                }
+
+                this.x = this.baseX + Math.cos(this.phase) * this.amplitude;
+                this.y = this.baseY + Math.sin(this.phase) * this.amplitude;
+
+                const dx = mouse.x - this.x;
+                const dy = mouse.y - this.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                
+                if (dist < 200) {
+                    const force = (200 - dist) / 200;
+                    this.vx -= (dx / dist) * force * 0.5;
+                    this.vy -= (dy / dist) * force * 0.5;
+                }
+
+                this.baseX += this.vx;
+                this.baseY += this.vy;
+                this.vx *= 0.99;
+                this.vy *= 0.99;
+
+                if (this.baseX < 0 || this.baseX > width) this.vx *= -1;
+                if (this.baseY < 0 || this.baseY > height) this.vy *= -1;
+            }
+
+            draw() {
+                const opacity = (Math.sin(this.phase) + 1) / 2 * 0.5 + 0.2;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(255, 62, 0, ${opacity})`;
+                ctx.fill();
+            }
+        }
+
+        for (let i = 0; i < 100; i++) {
+            particles.push(new QuantumParticle());
+        }
+
+        function drawConnections() {
+            for (let i = 0; i < particles.length; i++) {
+                for (let j = i + 1; j < particles.length; j++) {
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+
+                    if (dist < 150) {
+                        const opacity = (1 - dist / 150) * 0.15;
+                        ctx.beginPath();
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.strokeStyle = `rgba(255, 62, 0, ${opacity})`;
+                        ctx.lineWidth = 0.5;
+                        ctx.stroke();
+                    }
+                }
+            }
+        }
+
+        let time = 0;
+        function animateQuantum() {
+            if (!config.quantumActive) return;
+            
+            ctx.clearRect(0, 0, width, height);
+            time++;
+
+            particles.forEach(p => {
+                p.update(time);
+                p.draw();
+            });
+
+            drawConnections();
+            requestAnimationFrame(animateQuantum);
+        }
+        animateQuantum();
+
+        window.addEventListener('mousemove', (e) => {
+            mouse.x = e.clientX;
+            mouse.y = e.clientY;
+        });
+
+        // Hero Animations
+        const heroTl = gsap.timeline({ defaults: { ease: "power4.out" } });
+        
+        heroTl
+            .to('.hero-label span', { y: '0%', duration: 1, delay: 0.5 })
+            .to('.hero-title .line span', { 
+                y: '0%', 
+                rotation: 0, 
+                duration: 1.2, 
+                stagger: 0.1 
+            }, "-=0.5")
+            .to('.hero-subtitle span', { y: '0%', duration: 1 }, "-=0.8");
+
+        // Quote Animation
+        gsap.from('.quote-text', {
+            scrollTrigger: {
+                trigger: ".quote-section",
+                start: "top 80%",
+            },
+            opacity: 0,
+            y: 50,
+            duration: 1.2,
+            ease: "power4.out"
+        });
+
+        // Horizontal Scroll
+        const track = document.querySelector('.horizontal-track');
+        
+        gsap.to(track, {
+            x: () => -(track.scrollWidth - window.innerWidth + 100),
+            ease: "none",
+            scrollTrigger: {
+                trigger: ".horizontal-section",
+                start: "top top",
+                end: () => "+=" + (track.scrollWidth - window.innerWidth),
+                scrub: 1,
+                pin: true,
+                anticipatePin: 1,
+            }
+        });
+
+        // Velocity Skew
+        let currentSkew = 0;
+        let targetSkew = 0;
+        const skewElements = document.querySelectorAll('.velocity-skew');
+
+        lenis.on('scroll', ({ velocity }) => {
+            targetSkew = velocity * 0.03;
+        });
+
+        function updateSkew() {
+            currentSkew += (targetSkew - currentSkew) * 0.1;
+            targetSkew *= 0.9;
+            
+            skewElements.forEach(el => {
+                el.style.transform = `skewY(${currentSkew}deg)`;
+            });
+            
+            requestAnimationFrame(updateSkew);
+        }
+        updateSkew();
+
+        // Render Projects
+        function renderProjects(filter = 'all') {
+            const grid = document.getElementById('projectsGrid');
+            grid.innerHTML = '';
+            
+            const filtered = filter === 'all' ? projects : projects.filter(p => p.category === filter);
+            
+            filtered.forEach((project, index) => {
+                const item = document.createElement('div');
+                item.className = 'project-item';
+                item.setAttribute('data-cursor', 'hover');
+                item.innerHTML = `
+                    <div class="project-header">
+                        <div class="project-name">${project.name}</div>
+                        <div class="project-status">${project.status}</div>
+                    </div>
+                    <div class="project-desc">${project.description}</div>
+                    <div class="project-meta">
+                        <div class="project-lang">
+                            <div class="lang-dot"></div>
+                            <span>${project.language}</span>
+                        </div>
+                        <div class="project-stats">
+                            <span>★ ${project.stars}</span>
+                            <span>⑂ ${project.forks}</span>
+                        </div>
+                    </div>
+                `;
+                
+                item.addEventListener('mousemove', (e) => {
+                    const rect = item.getBoundingClientRect();
+                    const x = ((e.clientX - rect.left) / rect.width) * 100;
+                    const y = ((e.clientY - rect.top) / rect.height) * 100;
+                    item.style.setProperty('--mouse-x', x + '%');
+                    item.style.setProperty('--mouse-y', y + '%');
+                });
+                
+                grid.appendChild(item);
+                
+                gsap.from(item, {
+                    scrollTrigger: {
+                        trigger: item,
+                        start: "top 90%",
+                    },
+                    opacity: 0,
+                    y: 30,
+                    duration: 0.8,
+                    delay: index * 0.1,
+                    ease: "power4.out"
+                });
+            });
+            
+            document.getElementById('repoCount').textContent = filtered.length;
+        }
+
+        renderProjects();
+
+        function filterProjects(category, btn) {
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            renderProjects(category);
+        }
+
+        // Skill Items Mouse Tracking
+        document.querySelectorAll('.skill-item').forEach(item => {
+            item.addEventListener('mousemove', (e) => {
+                const rect = item.getBoundingClientRect();
+                const x = ((e.clientX - rect.left) / rect.width) * 100;
+                const y = ((e.clientY - rect.top) / rect.height) * 100;
+                item.style.setProperty('--mouse-x', x + '%');
+                item.style.setProperty('--mouse-y', y + '%');
+            });
+        });
+
+        // Admin Functions
+        let adminLoggedIn = false;
+        let sessionStart = Date.now();
+
+        function toggleAdmin() {
+            document.getElementById('adminPanel').classList.toggle('active');
+        }
+
+        function loginAdmin() {
+            const pass = document.getElementById('adminPass').value;
+            if (pass === config.adminPassword) {
+                adminLoggedIn = true;
+                document.getElementById('adminLogin').style.display = 'none';
+                document.getElementById('adminControls').style.display = 'block';
+                updateAnalytics();
+            } else {
+                alert('Invalid access key');
+            }
+        }
+
+        function logoutAdmin() {
+            adminLoggedIn = false;
+            document.getElementById('adminLogin').style.display = 'block';
+            document.getElementById('adminControls').style.display = 'none';
+            document.getElementById('adminPass').value = '';
+        }
+
+        function changePassword() {
+            const current = document.getElementById('currentPass').value;
+            const newPass = document.getElementById('newPass').value;
+            const confirm = document.getElementById('confirmPass').value;
+
+            if (current !== config.adminPassword) {
+                alert('Current password incorrect');
+                return;
+            }
+            if (newPass !== confirm) {
+                alert('Passwords do not match');
+                return;
+            }
+            if (newPass.length < 6) {
+                alert('Password must be at least 6 characters');
+                return;
+            }
+
+            config.adminPassword = newPass;
+            document.getElementById('currentPass').value = '';
+            document.getElementById('newPass').value = '';
+            document.getElementById('confirmPass').value = '';
+            alert('Access key updated successfully');
+        }
+
+        function toggleEffect(toggle, effect) {
+            toggle.classList.toggle('active');
+            const isActive = toggle.classList.contains('active');
+            
+            switch(effect) {
+                case 'quantum':
+                    config.quantumActive = isActive;
+                    if (isActive) animateQuantum();
+                    break;
+                case 'grain':
+                    document.querySelector('.grain').style.opacity = isActive ? '0.025' : '0';
+                    break;
+                case 'cursor':
+                    document.querySelector('.cursor').style.display = isActive ? 'block' : 'none';
+                    document.querySelector('.cursor-follower').style.display = isActive ? 'block' : 'none';
+                    break;
+                case 'skew':
+                    skewElements.forEach(el => {
+                        if (!isActive) el.style.transform = 'skewY(0deg)';
+                    });
+                    break;
+            }
+        }
+
+        function setTheme(theme, el) {
+            config.theme = theme;
+            document.querySelectorAll('.theme-preset').forEach(p => p.classList.remove('active'));
+            el.classList.add('active');
+
+            const root = document.documentElement;
+            switch(theme) {
+                case 'industrial':
+                    root.style.setProperty('--bg', '#050505');
+                    root.style.setProperty('--text', '#ffffff');
+                    root.style.setProperty('--accent', '#ff3e00');
+                    root.style.setProperty('--gray', '#666666');
+                    break;
+                case 'quantum':
+                    root.style.setProperty('--bg', '#000510');
+                    root.style.setProperty('--text', '#e0f2fe');
+                    root.style.setProperty('--accent', '#00d4ff');
+                    root.style.setProperty('--gray', '#475569');
+                    break;
+                case 'matrix':
+                    root.style.setProperty('--bg', '#000000');
+                    root.style.setProperty('--text', '#00ff41');
+                    root.style.setProperty('--accent', '#00ff41');
+                    root.style.setProperty('--gray', '#008f11');
+                    break;
+                case 'monochrome':
+                    root.style.setProperty('--bg', '#ffffff');
+                    root.style.setProperty('--text', '#000000');
+                    root.style.setProperty('--accent', '#000000');
+                    root.style.setProperty('--gray', '#666666');
+                    break;
+            }
+        }
+
+        function setAccent(color, el) {
+            config.accent = color;
+            document.documentElement.style.setProperty('--accent', color);
+            document.querySelectorAll('.color-option').forEach(opt => opt.classList.remove('active'));
+            el.classList.add('active');
+        }
+
+        function updateAnalytics() {
+            if (!adminLoggedIn) return;
+            
+            const elapsed = Math.floor((Date.now() - sessionStart) / 1000);
+            const mins = Math.floor(elapsed / 60).toString().padStart(2, '0');
+            const secs = (elapsed % 60).toString().padStart(2, '0');
+            document.getElementById('sessionTime').textContent = `${mins}:${secs}`;
+            
+            const scrollPercent = Math.round((window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100);
+            document.getElementById('scrollDepth').textContent = scrollPercent + '%';
+            
+            requestAnimationFrame(updateAnalytics);
+        }
+
+        function addProject() {
+            const name = prompt('Project name:');
+            const desc = prompt('Description:');
+            const lang = prompt('Primary language:');
+            const cat = prompt('Category (ai/quantum/opt):') || 'ai';
+            
+            if (name && desc) {
+                projects.push({
+                    name: name,
+                    category: cat,
+                    description: desc,
+                    language: lang || 'Python',
+                    stars: 0,
+                    forks: 0,
+                    status: 'New'
+                });
+                renderProjects();
+            }
+        }
+
+        function editQuote() {
+            const newQuote = prompt('Enter new quote:');
+            const newAuthor = prompt('Author:');
+            const newContext = prompt('Context (optional):');
+            
+            if (newQuote) {
+                document.querySelector('.quote-text').textContent = newQuote;
+                if (newAuthor) document.querySelector('.quote-author').textContent = newAuthor;
+                if (newContext) document.querySelector('.quote-context').textContent = newContext;
+            }
+        }
+
+        function editEducation() {
+            const degree = prompt('Degree:', 'B.S. Artificial Intelligence & Data Science');
+            const school = prompt('School:', 'Indian Institute of Technology Jodhpur');
+            
+            if (degree && school) {
+                document.querySelector('.edu-degree').textContent = degree;
+                document.querySelector('.edu-school').textContent = school;
+            }
+        }
+
+        function exportData() {
+            const data = {
+                timestamp: new Date().toISOString(),
+                sessionDuration: document.getElementById('sessionTime').textContent,
+                scrollDepth: document.getElementById('scrollDepth').textContent,
+                theme: config.theme,
+                projects: projects.length,
+                userAgent: navigator.userAgent
+            };
+            console.table(data);
+            alert('Analytics exported to console');
+        }
+
+        function scrollToContact(e) {
+            e.preventDefault();
+            document.getElementById('contact').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Active Section Detection
+        const sections = ['hero', 'quote-section', 'education', 'projects', 'work', 'about', 'skills', 'contact'];
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.5
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const id = entry.target.getAttribute('id') || 'Hero';
+                    const label = document.getElementById('activeSection');
+                    if (label) label.textContent = id.charAt(0).toUpperCase() + id.slice(1);
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('section').forEach(section => {
+            observer.observe(section);
+        });
+
+        // Magnetic Links
+        document.querySelectorAll('.contact-link').forEach(link => {
+            link.addEventListener('mousemove', (e) => {
+                const rect = link.getBoundingClientRect();
+                const x = e.clientX - rect.left - rect.width / 2;
+                
+                gsap.to(link, {
+                    x: x * 0.05,
+                    duration: 0.3,
+                    ease: "power2.out"
+                });
+            });
+            
+            link.addEventListener('mouseleave', () => {
+                gsap.to(link, {
+                    x: 0,
+                    duration: 0.3,
+                    ease: "power2.out"
+                });
+            });
+        });
+    </script>
+</body>
+</html>
