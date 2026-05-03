@@ -1,6 +1,6 @@
 <!-- HEADER BANNER -->
 <div align="center">
-  <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=700&size=30&duration=3000&pause=800&color=00D9FF&center=true&vCenter=true&width=700&height=80&lines=Hey+%F0%9F%91%8B+I'm+Aayush+(Aayuush);AI+%26+Data+Science+%40+IIT+Jodhpur;Founder+%40+AYNX+%26+SkillPraxis;Building+Decision+Intelligence+Systems" alt="Typing SVG" />
+  <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=700&size=30&duration=3000&pause=800&color=00D9FF&center=true&vCenter=true&width=700&height=80&lines=Hey+%F0%9F%91%8B+I'm+Aayuush+(Aayush);AI+%26+Data+Science+%40+IIT+Jodhpur;Founder+%40+AYNX+%26+SkillPraxis;Building+Decision+Intelligence+Systems" alt="Typing SVG" />
 </div>
 
 <div align="center">
@@ -18,7 +18,7 @@
 
 ```python
 class Aayuush:
-    name        = "Aayush a.k.a Aayuush"                          
+    name        = "Aayuush a.k.a Aayush"                          
     location    = "IIT Jodhpur, India 🇮🇳"
     role        = ["AI & DS Undergrad",
                    "Founder @ AYNX",
