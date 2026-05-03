@@ -7,7 +7,7 @@
 
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/aayuush1)
 [![Portfolio](https://img.shields.io/badge/Portfolio-FF6B35?style=for-the-badge&logo=Firefox&logoColor=white)](https://aayuush1.github.io/Aayuush1)
-[![Email](https://img.shields.io/badge/Email-0078D4?style=for-the-badge&logo=microsoftoutlook&logoColor=white)](mailto:i.aayu_sh@outlook.com)
+[![Email](https://img.shields.io/badge/Email-0078D4?style=for-the-badge&logo=microsoftoutlook&logoColor=white)](mailto:aayuush@proton.me)
 [![Profile Views](https://komarev.com/ghpvc/?username=aayuush1&color=00D9FF&style=for-the-badge&label=PROFILE+VIEWS)](https://github.com/aayuush1)
 
 </div>
