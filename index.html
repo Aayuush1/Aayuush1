@@ -945,7 +945,7 @@ body {
   background: var(--stardust);
   border: 1px solid rgba(74, 74, 94, 0.2);
   border-radius: 12px;
-  color: var(--text-secondary);
+  color: var(--text-primary);
   text-decoration: none;
   transition: all 0.3s ease;
 }
@@ -1139,6 +1139,151 @@ body {
 @keyframes blink {
   50% { opacity: 0; }
 }
+
+/* ===== FORM STYLES ===== */
+.contact-form {
+  background: var(--stardust);
+  border: 1px solid rgba(74, 74, 94, 0.2);
+  border-radius: 20px;
+  padding: 40px;
+}
+
+.form-group {
+  margin-bottom: 24px;
+}
+
+.form-group label {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--accent-copper);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 8px;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 14px 16px;
+  background: var(--nebula);
+  border: 1px solid rgba(74, 74, 94, 0.3);
+  border-radius: 10px;
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+  outline: none;
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+  color: var(--text-ghost);
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  border-color: var(--accent-copper);
+  box-shadow: 0 0 0 3px rgba(184, 115, 51, 0.1);
+}
+
+.form-group select {
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%238b8b9e' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 18px;
+  padding-right: 40px;
+}
+
+.form-group select option {
+  background: var(--stardust);
+  color: var(--text-primary);
+}
+
+.form-group textarea {
+  min-height: 140px;
+  resize: vertical;
+  line-height: 1.6;
+}
+
+/* ===== SOCIAL ICON FIXES ===== */
+.social-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.social-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 1;
+  background: var(--stardust);
+  border: 1px solid rgba(74, 74, 94, 0.2);
+  border-radius: 12px;
+  color: var(--text-primary);
+  text-decoration: none;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.social-link::before {
+  content: attr(title);
+  position: absolute;
+  bottom: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--accent-copper);
+  white-space: nowrap;
+  opacity: 0;
+  transition: all 0.3s ease;
+  pointer-events: none;
+}
+
+.social-link:hover::before {
+  bottom: 4px;
+  opacity: 1;
+}
+
+.social-link:hover {
+  border-color: var(--accent-copper);
+  color: var(--accent-copper);
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+.social-link svg {
+  width: 24px;
+  height: 24px;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: none;
+  stroke: currentColor;
+  transition: transform 0.3s ease;
+}
+
+.social-link:hover svg {
+  transform: scale(1.1);
+}
+
+/* Platform-specific icon colors on hover */
+.social-link[title*="GitHub"]:hover { color: #f0f0f5; border-color: #f0f0f5; }
+.social-link[title*="Hugging"]:hover { color: #ff9d00; border-color: #ff9d00; }
+.social-link[title*="Website"]:hover { color: #a5b4fc; border-color: #a5b4fc; }
+.social-link[title*="Bluesky"]:hover { color: #0085ff; border-color: #0085ff; }
+.social-link[title*="LinkedIn"]:hover { color: #0a66c2; border-color: #0a66c2; }
+.social-link[title*="Email"]:hover { color: #ea4335; border-color: #ea4335; }
+.social-link[title*="AYNX"]:hover { color: #b87333; border-color: #b87333; }
+.social-link[title*="Customer"]:hover { color: #22c55e; border-color: #22c55e; }
+.social-link[title*="Portfolio"]:hover { color: #f59e0b; border-color: #f59e0b; }
 </style>
 <base target="_blank">
 </head>
@@ -1797,10 +1942,10 @@ body {
         </div>
         <div class="form-group">
           <label for="message">Message</label>
-          <textarea id="message" name="message" required placeholder="Tell me about your project, idea, or question..."></textarea>
+          <textarea id="message" name="message" required placeholder="Tell me about your project, idea, or question..." rows="5"></textarea>
         </div>
         <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center;">
-          <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+          <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
           Send Message
         </button>
       </form>
@@ -2050,6 +2195,108 @@ document.querySelectorAll('.magnetic-btn').forEach(btn => {
 console.log('%c AAYUUSH PORTFOLIO ', 'background: #b87333; color: #050505; font-size: 20px; font-weight: bold; padding: 10px 20px;');
 console.log('%c Founder · Researcher · Optimization Architect ', 'color: #b87333; font-size: 14px;');
 console.log('%c All data verified from real profiles. No fake numbers. ', 'color: #22c55e; font-size: 12px;');
+</script>
+
+<script>
+// Form handling
+document.getElementById('contactForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+
+  const btn = this.querySelector('button[type="submit"]');
+  const originalText = btn.innerHTML;
+
+  // Show loading state
+  btn.innerHTML = '<svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="animation: rotate 1s linear infinite;"><circle cx="12" cy="12" r="10"></circle><path d="M12 6v6l4 2"></path></svg> Sending...';
+  btn.disabled = true;
+
+  // Simulate sending (replace with actual form submission)
+  setTimeout(() => {
+    btn.innerHTML = '<svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> Message Sent!';
+    btn.style.background = '#22c55e';
+
+    showToast('Message sent successfully! I'll get back to you soon.');
+
+    setTimeout(() => {
+      btn.innerHTML = originalText;
+      btn.style.background = '';
+      btn.disabled = false;
+      this.reset();
+    }, 3000);
+  }, 1500);
+});
+
+// Toast notification function
+function showToast(message) {
+  const toast = document.getElementById('toast');
+  const toastText = document.getElementById('toastText');
+  toastText.textContent = message;
+  toast.classList.add('show');
+
+  setTimeout(() => {
+    toast.classList.remove('show');
+  }, 4000);
+}
+
+// Email copy functionality
+document.querySelectorAll('.email-card').forEach(card => {
+  card.addEventListener('click', function() {
+    const email = this.querySelector('.email-address').textContent;
+    navigator.clipboard.writeText(email).then(() => {
+      showToast('Email copied to clipboard');
+    });
+  });
+});
+
+// Scroll progress
+document.addEventListener('scroll', () => {
+  const scrollProgress = document.getElementById('scrollProgress');
+  const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+  const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+  const scrolled = (scrollTop / scrollHeight) * 100;
+  scrollProgress.style.width = scrolled + '%';
+});
+
+// Intersection Observer for reveal animations
+const observerOptions = {
+  threshold: 0.1,
+  rootMargin: '0px 0px -50px 0px'
+};
+
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, observerOptions);
+
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// Nav active state
+document.querySelectorAll('.nav-link').forEach(link => {
+  link.addEventListener('click', function() {
+    document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+    this.classList.add('active');
+  });
+});
+
+// Radar bar animation on scroll
+const radarObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const fills = entry.target.querySelectorAll('.radar-fill');
+      fills.forEach((fill, index) => {
+        setTimeout(() => {
+          fill.style.width = fill.getAttribute('data-width') || fill.style.width;
+        }, index * 100);
+      });
+    }
+  });
+}, { threshold: 0.3 });
+
+document.querySelectorAll('.radar-section').forEach(section => {
+  radarObserver.observe(section);
+});
 </script>
 </body>
 </html>
