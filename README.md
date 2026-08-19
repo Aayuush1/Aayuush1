@@ -22,7 +22,12 @@ class Aayuush:
     location    = "IIT Jodhpur, India 🇮🇳"
     role        = ["AI & DS Undergrad",
                    "Founder @ AYNX",
-                   "Founder @ SkillPraxis"]
+                   "Founder @ SkillPraxis",
+                   "Contributor @ OSCG'26",
+                   "Contributor @ OSCI'26",
+                   "Contributor @ GSSoC'26",
+                   "Community Member @ QIndia",
+                   "Ex-Intern @ Scalar SoT"]
     building    = "AYNX Optivara — Decision Intelligence Platform"
     exploring   = ["Quantum Computing", "Quantum-AI", "Optimization Theory"]
     philosophy  = "Depth over shortcuts. First principles over surface-level."
