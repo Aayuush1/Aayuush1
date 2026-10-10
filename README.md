@@ -1,6 +1,6 @@
 <!-- HEADER BANNER -->
 <div align="center">
-  <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=700&size=30&duration=3000&pause=800&color=00D9FF&center=true&vCenter=true&width=700&height=80&lines=Hey+%F0%9F%91%8B+I'm+Aayuush+(Aayush);AI+%26+Data+Science+%40+IIT+Jodhpur;Founder+%40+AYNX+%26+SkillPraxis;Building+Decision+Intelligence+Systems" alt="Typing SVG" />
+  <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=700&size=30&duration=3000&pause=800&color=00D9FF&center=true&vCenter=true&width=700&height=80&lines=Hey+%F0%9F%91%8B+I'm+Aayuush+(Aayush);AI+%26+Data+Science+%40+IIT+Jodhpur;Community+Member+%40+QIndia;Building+Decision+Intelligence+Systems" alt="Typing SVG" />
 </div>
 
 <div align="center">
@@ -21,14 +21,12 @@ class Aayuush:
     name        = "Aayuush a.k.a Aayush"                          
     location    = "IIT Jodhpur, India 🇮🇳"
     role        = ["AI & DS Undergrad",
-                   "Founder @ AYNX",
-                   "Founder @ SkillPraxis",
                    "Contributor @ OSCG'26",
                    "Contributor @ OSCI'26",
                    "Contributor @ GSSoC'26",
                    "Community Member @ QIndia",
                    "Ex-Intern @ Scalar SoT"]
-    building    = "AYNX Optivara — Decision Intelligence Platform"
+    building    = "Decision Intelligence Platform"
     exploring   = ["Quantum Computing", "Quantum-AI", "Optimization Theory"]
     philosophy  = "Depth over shortcuts. First principles over surface-level."
     trajectory  = "Classical AI  ──►  Quantum-AI Systems"
@@ -36,41 +34,6 @@ class Aayuush:
     def current_mission(self):
         return "Bridging ML + Optimization + Quantum for next-gen enterprise systems"
 ```
-
----
-
-## 🚀 What I'm Building
-
-<table>
-<tr>
-<td valign="top" width="50%">
-
-### 🔷 AYNX — Decision Intelligence
-> *Founded January 2026*
-
-Building **AYNX Optivara** — a decision optimization platform for complex, data-driven enterprise environments.
-
-- 🧠 Constraint-based optimization engines
-- 📊 Predictive analytics pipelines
-- 🔁 Translating insights → actionable decisions
-- 🏗️ Systems modeling for high-stakes operations
-
-</td>
-<td valign="top" width="50%">
-
-### 🟠 SkillPraxis — Applied Learning
-> *Founded September 2025*
-
-An applied-learning platform focused on **real skill mastery** over passive consumption.
-
-- ✅ Learning by doing, not just watching
-- 🔧 Industry-relevant structured practice
-- 📈 Bridging academia ↔ real-world systems
-- 🎯 Built for students & professionals
-
-</td>
-</tr>
-</table>
 
 ---
 
@@ -171,9 +134,7 @@ I think in **first principles**. Whether it's a ML model, an optimization proble
 2021 ── 2025  │  📚 High School — PCM (UPMSP)
    Jul 2025   │  🎓 Joined IIT Jodhpur — B.S. AI & Data Science
    Jun 2025   │  💼 Interned @ Scaler School of Technology
-   Sep 2025   │  🚀 Founded SkillPraxis
-   Jan 2026   │  ⚡ Founded AYNX
-   Now ──►    │  🔭 Building Optivara + Exploring Quantum-AI
+   Now ──►    │  🔭 Building Decision Intelligence Systems
 ```
 
 ---
