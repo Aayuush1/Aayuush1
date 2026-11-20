@@ -26,7 +26,7 @@ class Aayuush:
                    "Contributor @ GSSoC'26",
                    "Community Member @ QIndia",
                    "Ex-Intern @ Scalar SoT"]
-    building    = "Decision Intelligence Platform"
+    building    = "Something"
     exploring   = ["Quantum Computing", "Quantum-AI", "Optimization Theory"]
     philosophy  = "Depth over shortcuts. First principles over surface-level."
     trajectory  = "Classical AI  ──►  Quantum-AI Systems"
